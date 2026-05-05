@@ -1,0 +1,13 @@
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+*.log
+.cache/
+.pytest_cache/
+.Python
+.eggs/
+.ruff_cache/
+*.egg-info/
+.coverage
+.tox/
