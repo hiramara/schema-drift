@@ -1,0 +1,40 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "ScheduleConfig",
+  "description": "Configuration for periodic schema-drift snapshot scheduling.",
+  "type": "object",
+  "required": ["interval_seconds", "storage_dir"],
+  "properties": {
+    "interval_seconds": {
+      "type": "integer",
+      "minimum": 1,
+      "description": "How often (in seconds) to capture a new snapshot."
+    },
+    "storage_dir": {
+      "type": "string",
+      "description": "Directory where snapshots are persisted."
+    },
+    "snapshot_id_prefix": {
+      "type": "string",
+      "default": "scheduled",
+      "description": "Prefix prepended to auto-generated snapshot IDs."
+    },
+    "notify_on_drift": {
+      "type": "boolean",
+      "default": false,
+      "description": "Whether to emit a notification when drift is detected."
+    },
+    "max_snapshots": {
+      "type": "integer",
+      "minimum": 1,
+      "default": 50,
+      "description": "Maximum number of snapshots to retain before pruning oldest."
+    },
+    "extra": {
+      "type": "object",
+      "description": "Arbitrary extra metadata attached to this schedule.",
+      "additionalProperties": true
+    }
+  },
+  "additionalProperties": false
+}
