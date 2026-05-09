@@ -1,0 +1,47 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "SchemaDriftIgnoreConfig",
+  "description": "Defines ignore rules that suppress expected schema changes.",
+  "type": "object",
+  "properties": {
+    "rules": {
+      "type": "array",
+      "description": "List of ignore rules. A change matching ANY rule is suppressed.",
+      "items": {
+        "type": "object",
+        "properties": {
+          "table": {
+            "type": ["string", "null"],
+            "description": "Table name to match. Null means any table."
+          },
+          "column": {
+            "type": ["string", "null"],
+            "description": "Column name to match. Null means any column."
+          },
+          "change_type": {
+            "type": ["string", "null"],
+            "description": "Change type value to match (e.g. 'column_added'). Null means any type.",
+            "enum": [
+              "column_added",
+              "column_removed",
+              "column_type_changed",
+              "column_nullable_changed",
+              "index_added",
+              "index_removed",
+              null
+            ]
+          },
+          "reason": {
+            "type": "string",
+            "description": "Human-readable explanation for why this change is ignored.",
+            "default": ""
+          }
+        },
+        "additionalProperties": false
+      },
+      "default": []
+    }
+  },
+  "required": ["rules"],
+  "additionalProperties": false
+}
