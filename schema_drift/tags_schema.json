@@ -1,0 +1,20 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "SnapshotTags",
+  "description": "Mapping of snapshot IDs to their associated tags.",
+  "type": "object",
+  "additionalProperties": {
+    "type": "array",
+    "items": {
+      "type": "string",
+      "minLength": 1
+    },
+    "uniqueItems": true
+  },
+  "examples": [
+    {
+      "snap-2024-01-01": ["production", "release-1.0"],
+      "snap-2024-02-01": ["staging"]
+    }
+  ]
+}
