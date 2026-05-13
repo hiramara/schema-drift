@@ -11,6 +11,25 @@ from .comparator import compare_latest_two, compare_snapshots
 from .storage import load_snapshot
 
 
+def _load_snapshot_pair(storage_dir: str, old_id: str, new_id: str, err):
+    """Load a pair of snapshots by ID, writing errors to *err*.
+
+    Returns ``(old, new)`` on success or ``None`` if either snapshot cannot
+    be found.
+    """
+    try:
+        old = load_snapshot(storage_dir, old_id)
+    except FileNotFoundError as exc:
+        err.write(f"Error: {exc}\n")
+        return None
+    try:
+        new = load_snapshot(storage_dir, new_id)
+    except FileNotFoundError as exc:
+        err.write(f"Error: {exc}\n")
+        return None
+    return old, new
+
+
 def cmd_compare(
     args: argparse.Namespace,
     out=sys.stdout,
@@ -20,14 +39,11 @@ def cmd_compare(
     storage_dir: str = args.storage_dir
 
     if args.old_id and args.new_id:
-        try:
-            old = load_snapshot(storage_dir, args.old_id)
-            new = load_snapshot(storage_dir, args.new_id)
-        except FileNotFoundError as exc:
-            err.write(f"Error: {exc}\n")
+        pair = _load_snapshot_pair(storage_dir, args.old_id, args.new_id, err)
+        if pair is None:
             return 1
-        from .comparator import compare_snapshots as _cmp
-        result = _cmp(old, new)
+        old, new = pair
+        result = compare_snapshots(old, new)
     else:
         result = compare_latest_two(storage_dir)
         if result is None:
