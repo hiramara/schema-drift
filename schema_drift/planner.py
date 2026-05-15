@@ -40,6 +40,10 @@ class MigrationPlan:
             "steps": [s.to_dict() for s in self.steps],
         }
 
+    def steps_for_table(self, table: str) -> List[MigrationStep]:
+        """Return all migration steps that apply to the given table name."""
+        return [s for s in self.steps if s.table == table]
+
 
 _PRIORITY = {
     ChangeType.COLUMN_REMOVED: 0,
