@@ -1,0 +1,36 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "DiffStats",
+  "description": "Statistical summary of schema changes between two snapshots.",
+  "type": "object",
+  "required": ["total", "by_type", "by_table", "tables_affected"],
+  "additionalProperties": false,
+  "properties": {
+    "total": {
+      "type": "integer",
+      "minimum": 0,
+      "description": "Total number of schema changes detected."
+    },
+    "by_type": {
+      "type": "object",
+      "description": "Count of changes keyed by ChangeType value.",
+      "additionalProperties": {
+        "type": "integer",
+        "minimum": 0
+      }
+    },
+    "by_table": {
+      "type": "object",
+      "description": "Count of changes keyed by table name.",
+      "additionalProperties": {
+        "type": "integer",
+        "minimum": 0
+      }
+    },
+    "tables_affected": {
+      "type": "integer",
+      "minimum": 0,
+      "description": "Number of distinct tables that have at least one change."
+    }
+  }
+}
