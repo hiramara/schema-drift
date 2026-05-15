@@ -51,6 +51,24 @@ class TestCmdIgnoreAdd:
         assert rule.column is None
         assert rule.change_type is None
 
+    def test_all_fields_persisted_correctly(self, tmp_path):
+        """Verify that all provided fields are saved and reloaded without loss."""
+        path = str(tmp_path / "ignore.json")
+        args = _args(
+            ignore_file=path,
+            table="payments",
+            column="amount",
+            change_type="type_changed",
+            reason="intentional migration",
+        )
+        cmd_ignore_add(args)
+        cfg = load_ignore_config(path)
+        rule = cfg.rules[0]
+        assert rule.table == "payments"
+        assert rule.column == "amount"
+        assert rule.change_type == "type_changed"
+        assert rule.reason == "intentional migration"
+
 
 class TestCmdIgnoreList:
     def test_empty_config_prints_message(self, tmp_path, capsys):
