@@ -33,6 +33,12 @@ class TestCmdLabelSet:
         cmd_label_set(_args(storage, snapshot_id="s1", label="my-label"))
         assert labeler.get_label(storage, "s1") == "my-label"
 
+    def test_overwrite_existing_label(self, storage):
+        """Setting a label on a snapshot that already has one should update it."""
+        cmd_label_set(_args(storage, snapshot_id="s1", label="old-label"))
+        cmd_label_set(_args(storage, snapshot_id="s1", label="new-label"))
+        assert labeler.get_label(storage, "s1") == "new-label"
+
 
 class TestCmdLabelRemove:
     def test_returns_0_when_exists(self, storage):
@@ -41,6 +47,12 @@ class TestCmdLabelRemove:
 
     def test_returns_1_when_absent(self, storage):
         assert cmd_label_remove(_args(storage, snapshot_id="ghost")) == 1
+
+    def test_label_gone_after_remove(self, storage):
+        """After removal the label should no longer be retrievable."""
+        labeler.set_label(storage, "s1", "lbl")
+        cmd_label_remove(_args(storage, snapshot_id="s1"))
+        assert labeler.get_label(storage, "s1") is None
 
 
 class TestCmdLabelGet:
@@ -79,3 +91,10 @@ class TestCmdLabelFind:
         rc = cmd_label_find(_args(storage, label="missing"))
         assert rc == 0
         assert "No snapshots" in capsys.readouterr().out
+
+    def test_non_matching_id_not_in_output(self, storage, capsys):
+        """Snapshots that do not match the label should not appear in output."""
+        labeler.set_label(storage, "s1", "prod")
+        labeler.set_label(storage, "s2", "staging")
+        cmd_label_find(_args(storage, label="prod"))
+        assert "s2" not in capsys.readouterr().out
